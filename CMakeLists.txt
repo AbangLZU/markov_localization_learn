@@ -3,5 +3,5 @@ project(markov_localization_learn)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp help_functions.h measurement_package.h map.h)
 add_executable(markov_localization_learn ${SOURCE_FILES})
