@@ -7,6 +7,8 @@
 #include "map.h"
 #include "help_functions.h"
 
+#include "bayesianFilter.h"
+
 using namespace std;
 
 int main() {
@@ -16,7 +18,7 @@ int main() {
      *****************************************************************************/
 
     //define example: 01, 02, 03, 04
-    string example_string = "01";
+    string example_string = "03";
 
     //declare map:
     map map_1d;
@@ -51,15 +53,34 @@ int main() {
                                  in_file_name_obs,
                                  measurement_pack_list);
 
-    /*****************************************************************************
-         *  Coding quiz 1: just print out map infos and measurement package:     *
-    ******************************************************************************/
+    /*******************************************************************************
+     *  start 1d_bayesian filter												   *
+     *******************************************************************************/
 
-    /////////////
-    //Add code://
-    /////////////
-    printf("*************************************************\n");
-    printf("Please print out map and measurement information!\n");
-    printf("*************************************************\n");
+    //create instance of 1d_bayesian localization filter:
+    bayesianFilter localization_1d_bayesian;
+
+    //define number of time steps:
+    size_t T = measurement_pack_list.size();
+
+    //cycle:
+    for (size_t t = 0; t < T; ++t) {
+
+        //Call 1d_bayesian filter:
+        localization_1d_bayesian.process_measurement(measurement_pack_list[t],
+                                                     map_1d,
+                                                     helper);
+    }
+
+    /*******************************************************************************
+     *  print/compare results:												   *
+     ********************************************************************************/
+    //define file name of gt data:
+    sprintf(in_file_name_gt, "data/example%s/gt_example%s.txt", example_string.c_str(), example_string.c_str());
+
+    ///compare gt data with results:
+    helper.compare_data(in_file_name_gt, localization_1d_bayesian.bel_x);
+
+
     return 0;
 }
